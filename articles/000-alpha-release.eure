@@ -1,0 +1,218 @@
+$frontmatter {
+}
+
+'#': [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
+
+intro-message = ```markdown
+Hi, I'm Ryo Hirayama from Hihaheho Studio, a game studio. I'm excited to announce to the first alpha release of a newly designed data notation language called Eure. It encourage user to write their data expressively. It would fill the gap between TOML and YAML, like data structure is too complicated that disadvantages TOML's minimalism but YAML makes to too verbose and hard to reflect user's intuition about the data. Also, it's designed to cover the modern data types like tuples, never type constructor, and tagged unions. It'll covers various use case not by including rich feature-sets, but with builtin extensibility.
+```
+
+@ c[] {
+  '##': Suggested use cases
+
+  c[] = ```markdown
+- Mid-sized or large configuration files
+- Data-driven test suite for a spec (Eure does have massive test suite written in Eure)
+- Manifest files for Kubernetes, CI/CD pipelines, etc., which tends to be complex and hard to maintain
+- Complex JSON
+- Write a blog post or document in CMS or static site generator with Eure instead of markdown (this blog post is also written in Eure)
+- Write a JSON Schema in more fluent and readable way by converting from Eure Schema
+```
+}
+
+@ c[] {
+  '##': First glance at the syntax:
+
+  github-action = ````eure
+  name: CI
+
+  @ on
+  pull_request = null
+  push.branches = ["main"]
+
+  @ jobs.hello_world {
+    runs-on: ubuntu-latest
+    @ steps[]
+    run: echo "Hello, World!"
+  }
+
+  @ jobs.build {
+    runs-on: ubuntu-latest
+
+    @ steps[].uses: actions/checkout@v6
+
+    @ steps[]
+    uses: actions/cache@v4
+    with {
+      key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.toml') }}
+      path = ```
+        ~/.cargo/bin/
+        ~/.cargo/registry/index/
+        ~/.cargo/registry/cache/
+        ~/.cargo/git/db/
+        target/
+        ```
+    }
+
+    @ steps[]
+    uses: dtolnay/rust-toolchain@stable
+    with {
+      components: rustfmt, clippy
+    }
+
+    @ steps[]
+    name: Run all
+    run = ```bash
+      cargo fmt --check
+      cargo clippy
+      cargo test
+      ```
+  }
+  ````
+
+  c[] = ```markdown
+As you noticed, this what if a GitHub Action workflow could be written in Eure.
+```
+
+  @ path
+  '###': Path
+
+  c[] = ```markdown
+`push.branches` and `jobs.hello_world` are path. Path is a sequence of keys separated by `.`.
+```
+
+  @ binding
+  '###': Binding
+
+  c[] = ```markdown
+There two type of binding `=` (value binding) and `:` (text binding). At the right hand side of `=`, you can write any literals like `42` (integer), `3.24` (float), "quoted/escaped string", 'literal string', `(1.0, "tuple")`, codeblock (delimited with 3-to-6 backquotes, and `` `let a = 1` `` (inline code), `[1, 2, 3]`, and `{ x => 1, y => 2 }` (inline map).
+
+`:` is called "Text Binding". It interprets the right hand side until newline or EOF as plaintext always without any escaping or any implicit typing unlike YAML. `text: true` is always `text = "true"` and if you need to use `=` if you want to bind a boolean or any other type which is not plaintext.
+
+Binding can have composite path like `push.branches =`.
+```
+
+  @ section
+  '###': Section
+
+  c[] = ```markdown
+`@` is the beginning of a section and is like table syntax in TOML. Eure's `@ a.b[]` corresponding to TOML's `[[a.b]]`. Sections can have two types of body: bindings and nested document. Binding can contain any number of bindings and nested one can contain nested Eure document in `{}'. In the above example, `@ jobs.hello-world` and '@ jobs.build` have nested document.
+```
+
+  @ code
+  '###': Code
+
+  c[] = ```markdown
+As I said "plaintext" before, there's other text type in Eure. One is inline code and another is codeblock. Both can have language tag like `` json`{"a": 1}` `` for inline code. One interesting point is that `` plaintext`hello` `` is equivalent with `"hello"` in the data model.
+
+The language tag can be used other than programming language. If you write, `` uuid`b5607686-fcb9-4f80-9040-3f0ba14f6b97` `` or `` datetime`2026-01-18T23:56:00Z` ``, your editor can validate the string content against the format without adding those in Eure's spec and data-model.
+```
+}
+
+@ c[] {
+  '##': Things not in the first example.
+
+  @ variant
+  '###': Variant
+
+  c[] = ```eure
+  @ pull_request {
+    $variant: union
+    $optional = true
+    $variant-repr = "untagged"
+
+    /// Config variant (tried first in definition order)
+    variants.config {
+      branches = [`text`]
+      branches.$optional = true
+      paths = [`text`]
+      paths.$optional = true
+      paths-ignore = [`text`]
+      paths-ignore.$optional = true
+      types = [`text`]
+      types.$optional = true
+    }
+
+    variants.null = `null`
+  }
+  ```
+
+  c[] = ```markdown
+This from Eure Schema of GitHub Actions workflow. `$variant: union` to tell Eure Schema deserializer this value is about defining a union type (`union` variant of `type` union), and not other type like record. This schema defines a union which have two variants, config and null, and document can specify variant like:
+```
+
+  c[] = ```eure
+  pull_request = null
+  pull_request.$variant: null
+  ```
+
+  c[] = ```markdown
+though it's verbose since no other variants accept the `null` value.
+```
+
+  @ c[]
+  '###': Extension
+
+  c[] = ```markdown
+  In Eure, an ident prefixed with `$` called an extension or extension namespace which can be bound any valid Eure value without affecting the data model level.
+
+  For example:
+  ```
+
+  c[] = ```eure
+  $schema = "eure-schema.schema.eure"
+
+  /// TextMate Language Grammar Schema
+  $variant: record
+
+  /// Grammar display name
+  name = `text`
+
+  /// Unique scope name (e.g., "source.eure")
+  scopeName = `text`
+
+  /// Schema URL reference
+  "$schema" = `text`
+  "$schema".$optional = true
+  ```
+
+  c[] = ```markdown
+This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihaheho/eure/blob/dd9a7aa9292201d6ce24d6fbb191d9a705377257/assets/schemas/textmate-grammar.schema.eure>
+
+`$schema: /path/to/a/schema/file` is used to tell language processor about the schema of this file. And in Eure schema file, optional record field is specified by `$optional = true`. In both cases, those are unambiguated from string keys which prefixed with "$". If you need assign a value to a string key "$schema", you must write it as like `"$schema" = "https://json-schema.org/draft/2020-12/schema"`.
+```
+
+  c[] {
+    '####': Planned language builtin extension
+
+    c[] = ```markdown
+- `$precision`: bulk specify the precision of floats in the scope to let serializer/deserializer to suggest how to serialize/deserialize the float value.
+- `$license`: specify the license of the document or the scope like `$license: MIT OR Apache-2.0`.
+- `$local`: a well-known extension namespace for document-local metadata for user.
+```
+  }
+}
+
+@ c[] {
+  '##': What's next in the BETA release?
+
+  c[] = ```markdown
+- [ ] (`serde-eure`) Serde support with encoding extensions into configured special string keys.
+- [ ] (`bevy-eure-asset`) An ecosystem crate for Bevy to load Eure assets. That's one I keen to have for my game project.
+- [ ] (`eure-ls`): "Format" action to format Eure document from editor.
+- [ ] (`eure-ls`): Editor hover support
+- [ ] (`eure-ls`): Editor completion support
+- [ ] (`vscode`): "Preview JSON" action in VS Code ext
+```
+}
+
+@ c[] {
+  '##': Things I want to do but needs someone to help me.
+
+  c[] = ```markdown
+- [ ] Zed editor support.
+- [ ] Vim/Neovim support.
+- [ ] Publish Node.js package to npm with native builds.
+- [ ] Publish Python package to PyPI with native builds.
+```
+}

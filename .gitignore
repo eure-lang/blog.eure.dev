@@ -1,0 +1,8 @@
+*
+!*/
+!.gitignore
+
+!articles/**/*.eure
+
+!Eure.eure
+!article.schema.eure

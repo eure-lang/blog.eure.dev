@@ -1,0 +1,3 @@
+@ targets.blog
+globs = ["articles/*.eure"]
+schema = "article.schema.eure"
