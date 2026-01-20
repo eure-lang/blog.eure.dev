@@ -223,3 +223,23 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 - [ ] Publish Python package to PyPI with native builds.
 ```
 }
+
+@ c[] {
+  '##': Needs feedback
+
+  c = ```markdown
+- The pronunciation of Eure is like "your" is fine?
+- The symbol selection for grammar looks good or bad? Especially for the `@`
+- Overall syntax looks good or bad?
+- The $variant seems nice or bad for union tag?
+- What tooling that is essential to use Eure for your use cases?
+- Any questions
+
+Places for feedback are:
+- GitHub Discussion/ Issue on the repo
+- any SNSs I can query with #eurelang tag
+- Hihaheho Studio Discord
+
+I don't plan do statistics for this, but I just want to know things I did not know or consider on the design.
+```
+}
