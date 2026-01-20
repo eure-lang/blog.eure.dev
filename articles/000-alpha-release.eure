@@ -7,6 +7,13 @@ intro-message = ```markdown
 Hi, I'm Ryo Hirayama from Hihaheho Studio, a game studio. I'm excited to announce to the first alpha release of a newly designed data notation language called Eure. It encourage user to write their data expressively. It would fill the gap between TOML and YAML, like data structure is too complicated that disadvantages TOML's minimalism but YAML makes to too verbose and hard to reflect user's intuition about the data. Also, it's designed to cover the modern data types like tuples, never type constructor, and tagged unions. It'll covers various use case not by including rich feature-sets, but with builtin extensibility.
 ```
 
+tldr-for-toml-user = ```markdown
+**TL;DR for TOML users:
+
+- It's arbitrary nestable
+- For array table, `@ project.member[]` instead of `[[project.member]]`
+```
+
 @ c[] {
   '##': Suggested use cases
 
