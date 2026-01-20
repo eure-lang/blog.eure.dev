@@ -21,7 +21,7 @@ tldr-for-toml-user = ```markdown
 - Mid-sized or large configuration files
 - Data-driven test suite for a spec (Eure does have massive test suite written in Eure)
 - Manifest files for Kubernetes, CI/CD pipelines, etc., which tends to be complex and hard to maintain
-- Complex JSON
+- Generate complex JSON from Eure (Eure itself does this for tmLanguage file)
 - Write a blog post or document in CMS or static site generator with Eure instead of markdown (this blog post is also written in Eure)
 - Write a JSON Schema in more fluent and readable way by converting from Eure Schema
 ```
