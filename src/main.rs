@@ -159,11 +159,64 @@ a:hover {
 .site-nav {
     max-width: 900px;
     margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.divider {
+    width: 1px;
+    height: 2rem;
+    background-color: currentColor;
+    opacity: 0.3;
+    transform: translateY(0.25rem);
+}
+
+.eure-logo {
+    display: flex;
+    align-items: center;
+    transition: opacity 0.2s;
+}
+
+.eure-logo:hover {
+    opacity: 0.8;
+}
+
+.eure-logo img {
+    height: 32px;
+}
+
+.header-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-nav-links a {
+    color: var(--ctp-text);
+    transition: opacity 0.2s;
+}
+
+.header-nav-links a:hover {
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
 }
 
 .site-title {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: bold;
+    line-height: 1;
     color: var(--ctp-mauve);
 }
 
