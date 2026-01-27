@@ -1,5 +1,6 @@
 $frontmatter {
   title: Query System Wins
+  draft = false
 }
 
 '#': Query System Wins

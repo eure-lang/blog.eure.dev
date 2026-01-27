@@ -5,5 +5,8 @@ edition = "2024"
 
 [dependencies]
 eure = { package = "eure", git = "https://github.com/Hihaheho/eure" }
+eure-parol = { git = "https://github.com/Hihaheho/eure" }
 indexmap = "2"
 maud = "0.27.0"
+markdown = "1"
+giallo = { version = "0.2", features = ["dump"] }

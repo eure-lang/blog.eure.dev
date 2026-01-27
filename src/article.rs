@@ -4,21 +4,22 @@ use indexmap::IndexMap;
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Article {
     #[eure(ext)]
-    frontmatter: Frontmatter,
+    pub frontmatter: Frontmatter,
     #[eure(rename = "#")]
-    header: Text,
-    sections: IndexMap<String, Item<TextOrNested<Level2>>>,
+    pub header: Text,
+    #[eure(flatten)]
+    pub sections: IndexMap<String, Item<TextOrNested<Level2>>>,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Frontmatter {
-    title: Text,
+    pub title: Text,
     #[eure(default)]
-    date: Option<Text>,
+    pub date: Option<Text>,
     #[eure(default)]
-    tags: Vec<String>,
+    pub tags: Vec<String>,
     #[eure(default)]
-    draft: bool,
+    pub draft: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
@@ -36,34 +37,39 @@ pub enum TextOrNested<T> {
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Level2 {
     #[eure(rename = "##")]
-    header: Text,
-    sections: IndexMap<String, Item<TextOrNested<Level3>>>,
+    pub header: Text,
+    #[eure(flatten)]
+    pub sections: IndexMap<String, Item<TextOrNested<Level3>>>,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Level3 {
     #[eure(rename = "###")]
-    header: Text,
-    sections: IndexMap<String, Item<TextOrNested<Level4>>>,
+    pub header: Text,
+    #[eure(flatten)]
+    pub sections: IndexMap<String, Item<TextOrNested<Level4>>>,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Level4 {
     #[eure(rename = "####")]
-    header: Text,
-    sections: IndexMap<String, Item<TextOrNested<Level5>>>,
+    pub header: Text,
+    #[eure(flatten)]
+    pub sections: IndexMap<String, Item<TextOrNested<Level5>>>,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Level5 {
     #[eure(rename = "#####")]
-    header: Text,
-    sections: IndexMap<String, Item<TextOrNested<Level6>>>,
+    pub header: Text,
+    #[eure(flatten)]
+    pub sections: IndexMap<String, Item<TextOrNested<Level6>>>,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Level6 {
     #[eure(rename = "######")]
-    header: Text,
-    sections: IndexMap<String, Item<Text>>,
+    pub header: Text,
+    #[eure(flatten)]
+    pub sections: IndexMap<String, Item<Text>>,
 }

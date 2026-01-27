@@ -1,5 +1,6 @@
 $ext-type.frontmatter {
   title = `text`
+  draft = `boolean`
 }
 
 '#' = `text`

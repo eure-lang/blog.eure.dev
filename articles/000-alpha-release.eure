@@ -1,5 +1,6 @@
 $frontmatter {
   title: [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
+  draft = false
 }
 
 '#': [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
