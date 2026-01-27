@@ -1,9 +1,9 @@
 $frontmatter {
-  title: [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
+  title: Eure: filling the gap between TOML and YAML with jq-style paths, arbitrary nesting, and tagged unions
   draft = false
 }
 
-'#': [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
+'#': Eure: filling the gap between TOML and YAML with jq-style paths, arbitrary nesting, and tagged unions
 
 draft-note = ```markdown
 This is a draft version of the blog post.
@@ -19,12 +19,16 @@ Landing page / web playground: https://eure.dev
 GitHub: https://github.com/Hihaheho/eure
 ```
 
-tldr-for-toml-user = ```markdown
-**TL;DR for TOML users**:
-
-- It's arbitrarily nestable
-- For array tables, `@ project.member[]` instead of `[[project.member]]`
+tldr-for-toml-user = ```html
+<details>
+  <summary><strong>TL;DR for TOML users</strong> (click to expand)</summary>
+  <ul>
+    <li>It's arbitrarily nestable</li>
+    <li>For array tables, <code>@ project.member[]</code> instead of <code>[[project.member]]</code></li>
+  </ul>
+</details>
 ```
+tldr-for-toml-user.$mark.dangerously-inner-html = true
 
 toc-here.$toc = true
 
@@ -72,7 +76,7 @@ Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.4/do
 @ usecases {
   '##': Suggested use cases
 
-  c[] = ```markdown
+  body = ```markdown
 - Mid-sized or large configuration files
 - Data-driven test suite for a spec (Eure does have a massive test suite written in Eure)
 - Manifest files for Kubernetes, CI/CD pipelines, etc., which tend to be complex and hard to maintain
@@ -140,14 +144,28 @@ As you noticed, this is what a GitHub Action workflow could look like in Eure.
   '###': Path
 
   md = ```markdown
-`push.branches` and `jobs.hello_world` are paths. A path is a sequence of keys separated by `.`.
+`push.branches` and `jobs.hello_world` are paths. A path is a sequence of keys separated by `.`. Path syntax is used in bindings, map keys, and section headers.
+
+**Key forms:**
+- Identifier: `jobs.hello_world`
+- Quoted string (with escapes/whitespace): `"title:\t aaa".value`
+- Integer key: `x.1 = 1`
+- Tuple key: `coords.(0, 1) = true`
+- Extension (metadata channel): `$local.note`
+
+**Path markers:**
+- Array append: `items[] = "new"`
+- Array index: `items[0] = "first"`
+- Tuple index: `point.#1 = 42`
+
+Eure's object keys are strings, integers, or tuples (only string keys are JSON-compatible). Extensions are a separate metadata channel (e.g. `$local.note`) and don't affect the data model unless your tools interpret them.
 ```
 
   @ binding
   '###': Binding
 
   binding-types = ```markdown
-There are two types of binding: `=` (value binding) and `:` (text binding). On the right-hand side of `=`, you can write any literals like `42` (integer), `3.24` (float), "quoted/escaped string", 'literal string', `(1.0, "tuple")`, code blocks (delimited with 3-6 backticks), `` `let a = 1` `` (inline code), `[1, 2, 3]`, and `{ x => 1, y => 2 }` (inline map).
+There are two types of binding: `=` (value binding) and `:` (text binding). The left-hand side is always a path. On the right-hand side of `=`, you can write any literals like `42` (integer), `3.24` (float), `"escaped\nstring"`, `'literal string'`, `(1.0, "tuple")`, code blocks (delimited with 3-6 backticks), `` `let a = 1` `` (inline code), `[1, 2, 3]`, and `{ x => 1, y => 2 }` (inline map).
 
 `:` is called "Text Binding". It interprets the right-hand side until newline or EOF as plaintext, always without escaping or implicit typing, unlike YAML. So `text: true` is always `text = "true"`. Use `=` when you want to bind a boolean or any other non-plaintext type.
 
@@ -303,16 +321,22 @@ Reference: https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md
   '##': Try it
 
   body = ````markdown
+Web playground:
+<https://eure.dev>
+
 Install CLI:
 `cargo install eure-cli`
 
 Convert Eure to JSON:
-```
+```bash
 echo 'greeting: Hello World!' | eure to-json -
+```
+Output:
+```json
 {"greeting":"Hello World!"}
 ```
 
-Editor extensions:
+Editor extensions (optional):
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=hihaheho.eurels
 - Open VSX: https://open-vsx.org/extension/hihaheho/eurels
 ````

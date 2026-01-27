@@ -1,6 +1,8 @@
-use eure::query::{semantic_tokens, SemanticToken, SemanticTokenModifier, SemanticTokenType};
-use eure_parol::{parse_tolerant, ParseResult};
-use maud::{html, Markup, PreEscaped};
+use eure::{
+    parol::{ParseResult, parse_tolerant},
+    query::{SemanticToken, SemanticTokenModifier, SemanticTokenType, semantic_tokens},
+};
+use maud::{Markup, PreEscaped, html};
 
 pub fn render_eure_highlighted(content: &str) -> Markup {
     let cst = match parse_tolerant(content) {

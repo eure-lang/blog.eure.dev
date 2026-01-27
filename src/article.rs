@@ -1,6 +1,30 @@
 use eure::{ParseDocument, value::Text};
 use indexmap::IndexMap;
 
+/// Alert type for GitHub-style alert boxes
+#[derive(Debug, Clone, Copy, PartialEq, ParseDocument)]
+pub enum AlertType {
+    #[eure(rename = "NOTE")]
+    Note,
+    #[eure(rename = "TIP")]
+    Tip,
+    #[eure(rename = "IMPORTANT")]
+    Important,
+    #[eure(rename = "WARNING")]
+    Warning,
+    #[eure(rename = "CAUTION")]
+    Caution,
+}
+
+/// Mark options for extending text content with visual markers
+#[derive(Debug, Clone, PartialEq, ParseDocument, Default)]
+pub struct MarkOptions {
+    #[eure(default)]
+    pub alert: Option<AlertType>,
+    #[eure(rename = "dangerously-inner-html", default)]
+    pub dangerously_inner_html: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Article {
     #[eure(ext)]
@@ -46,7 +70,12 @@ pub struct Toc {
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub enum TextOrNested<T> {
-    Text(Text),
+    Text {
+        #[eure(flatten)]
+        text: Text,
+        #[eure(ext, default)]
+        mark: MarkOptions,
+    },
     Nested(T),
 }
 

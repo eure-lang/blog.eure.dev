@@ -448,6 +448,86 @@ h6.section-header { font-size: 0.875rem; }
     background-color: var(--ctp-surface0);
 }
 
+/* GitHub-style Alerts */
+.alert {
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    border-radius: 6px;
+    border-left: 4px solid;
+    background-color: var(--ctp-surface0);
+}
+
+.alert-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.alert-icon {
+    display: flex;
+    align-items: center;
+}
+
+.alert-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.alert-content {
+    margin-left: 0;
+}
+
+.alert-content > :first-child {
+    margin-top: 0;
+}
+
+.alert-content > :last-child {
+    margin-bottom: 0;
+}
+
+/* Alert type colors (Catppuccin Mocha) */
+.alert-note {
+    border-color: var(--ctp-blue);
+}
+
+.alert-note .alert-title {
+    color: var(--ctp-blue);
+}
+
+.alert-tip {
+    border-color: var(--ctp-green);
+}
+
+.alert-tip .alert-title {
+    color: var(--ctp-green);
+}
+
+.alert-important {
+    border-color: var(--ctp-mauve);
+}
+
+.alert-important .alert-title {
+    color: var(--ctp-mauve);
+}
+
+.alert-warning {
+    border-color: var(--ctp-yellow);
+}
+
+.alert-warning .alert-title {
+    color: var(--ctp-yellow);
+}
+
+.alert-caution {
+    border-color: var(--ctp-red);
+}
+
+.alert-caution .alert-title {
+    color: var(--ctp-red);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .site-main {
