@@ -12,10 +12,13 @@ draft-note.$mark.alert: NOTE
 
 intro-message = ```markdown
 Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to announce the first alpha release of a newly designed data notation language called Eure (pronounced "your"). It encourages users to write their data expressively.
+
+You can try it right now in the web playground: https://eure.dev
+It supports syntax highlighting, to-JSON conversion, schema verification, and real-time diagnostics.
 ```
 
 tldr-links = ```markdown
-Landing page / web playground: https://eure.dev
+Landing page / Web playground: https://eure.dev
 GitHub: https://github.com/Hihaheho/eure
 ```
 
@@ -43,33 +46,6 @@ Personally, I don't choose YAML for small configuration files because it makes t
 Eure is designed to cover the gap between TOML and YAML. It's designed to have the minimalism and flexibility of TOML, but also the versatility and arbitrary nesting syntax of YAML. Thus, Eure is a good choice for both small configuration files and complex manifest files.
 
 Also, it's designed to cover modern data types like tuples, the never type constructor, and tagged unions. It'll cover various use cases not by adding a rich feature set into the language, but through built-in extensibility.
-```
-}
-
-@ data-model-and-interpretation {
-  '##': Data model & interpretation (from the spec)
-
-  body = ```markdown
-**Data model (JSON-compatible, but richer):**
-- Same core types as JSON: null, bool, number, string, array, map
-- Extra types: arbitrary-precision integers, tuples, holes, language-tagged text, and extensions (metadata channel)
-- When converting to JSON, tuples may become arrays and text language tags/extensions can be dropped
-
-**Interpretation (how a document is applied):**
-- A document is interpreted as a series of actions that navigate a tree and bind values
-- Evaluation is deterministic and top-to-bottom with a well-defined, intuitive set of actions
-- Each binding asserts the target is unbound, then binds a value
-- Sections are just scoped path prefixes; `@ items[]` appends to arrays
-
-Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md#8-document-interpretation
-```
-
-  toml-diff = ```markdown
-**Differences from TOML (high level):**
-- Arbitrary nesting with sections and block sections (no top-level table/array-table limitations)
-- Richer value types (tuples, holes, tagged text, extensions)
-- Text binding with `:` for raw plaintext on a line
-- Paths are first-class (e.g., `a.b[0].c`, tuple index `#0`)
 ```
 }
 
@@ -271,6 +247,33 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 - `$local`: a well-known extension namespace for document-local metadata for users.
 ```
   }
+}
+
+@ data-model-and-interpretation {
+  '##': Data model & interpretation (from the spec)
+
+  body = ```markdown
+**Data model (JSON-compatible, but richer):**
+- Same core types as JSON: null, bool, number, string, array, map
+- Extra types: arbitrary-precision integers, tuples, holes, language-tagged text, and extensions (metadata channel)
+- When converting to JSON, tuples may become arrays and text language tags/extensions can be dropped
+
+**Interpretation (how a document is applied):**
+- A document is interpreted as a series of actions that navigate a tree and bind values
+- Evaluation is deterministic and top-to-bottom with a well-defined, intuitive set of actions
+- Each binding asserts the target is unbound, then binds a value
+- Sections are just scoped path prefixes; `@ items[]` appends to arrays
+
+Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md#8-document-interpretation
+```
+
+  toml-diff = ```markdown
+**Differences from TOML (high level):**
+- Arbitrary nesting with sections and block sections (no top-level table/array-table limitations)
+- Richer value types (tuples, holes, tagged text, extensions)
+- Text binding with `:` for raw plaintext on a line
+- Paths are first-class (e.g., `a.b[0].c`, tuple index `#0`)
+```
 }
 
 @ whats-next {
