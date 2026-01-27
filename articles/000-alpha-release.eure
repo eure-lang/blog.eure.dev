@@ -1,10 +1,11 @@
 $frontmatter {
+  title: [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
 }
 
 '#': [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
 
 intro-message = ```markdown
-Hi, I'm Ryo Hirayama from Hihaheho Studio, a game studio. I'm excited to announce to the first alpha release of a newly designed data notation language called Eure. It encourage user to write their data expressively. It would fill the gap between TOML and YAML, like data structure is too complicated that disadvantages TOML's minimalism but YAML makes to too verbose and hard to reflect user's intuition about the data. Also, it's designed to cover the modern data types like tuples, never type constructor, and tagged unions. It'll covers various use case not by including rich feature-sets, but with builtin extensibility.
+Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to announce the first alpha release of a newly designed data notation language called Eure. It encourage user to write their data expressively.
 ```
 
 tldr-for-toml-user = ```markdown
@@ -14,7 +15,21 @@ tldr-for-toml-user = ```markdown
 - For array table, `@ project.member[]` instead of `[[project.member]]`
 ```
 
-@ c[] {
+@ why-toml-yaml {
+  '##': Why I mentioned TOML and YAML?
+
+  body = ```markdown
+I'm a fan of both TOML and YAML. I prefer TOML's minimalism and flexibility, but YAML's versatility and arbitrary nesting syntax.
+
+Personally, I don't choose YAML for small configuration files because it makes the file too verbose, and TOML is more suitable for that. But for manifest files for Kubernetes, CI/CD pipelines, etc., which tends to be complex and hard to maintain, YAML is more suitable.
+
+Eure is designed to cover the gap between TOML and YAML. It's designed to have minimalism and flexibility like TOML, but also have versatility and arbitrary nesting syntax like YAML. Thus, Eure is a good choice for both small configuration files and complex manifest files.
+
+Also, it's designed to cover the modern data types like tuples, never type constructor, and tagged unions. It'll cover various use cases not by including rich feature-sets into the language, but with builtin extensibility.
+```
+}
+
+@ usecases {
   '##': Suggested use cases
 
   c[] = ```markdown
@@ -27,7 +42,7 @@ tldr-for-toml-user = ```markdown
 ```
 }
 
-@ c[] {
+@ syntax {
   '##': First glance at the syntax:
 
   github-action = ````eure
@@ -77,21 +92,21 @@ tldr-for-toml-user = ```markdown
   }
   ````
 
-  c[] = ```markdown
+  as-you-notice = ```markdown
 As you noticed, this what if a GitHub Action workflow could be written in Eure.
 ```
 
   @ path
   '###': Path
 
-  c[] = ```markdown
+  md = ```markdown
 `push.branches` and `jobs.hello_world` are path. Path is a sequence of keys separated by `.`.
 ```
 
   @ binding
   '###': Binding
 
-  c[] = ```markdown
+  binding-types = ```markdown
 There two type of binding `=` (value binding) and `:` (text binding). At the right hand side of `=`, you can write any literals like `42` (integer), `3.24` (float), "quoted/escaped string", 'literal string', `(1.0, "tuple")`, codeblock (delimited with 3-to-6 backquotes, and `` `let a = 1` `` (inline code), `[1, 2, 3]`, and `{ x => 1, y => 2 }` (inline map).
 
 `:` is called "Text Binding". It interprets the right hand side until newline or EOF as plaintext always without any escaping or any implicit typing unlike YAML. `text: true` is always `text = "true"` and if you need to use `=` if you want to bind a boolean or any other type which is not plaintext.
@@ -102,27 +117,27 @@ Binding can have composite path like `push.branches =`.
   @ section
   '###': Section
 
-  c[] = ```markdown
+  section-body = ```markdown
 `@` is the beginning of a section and is like table syntax in TOML. Eure's `@ a.b[]` corresponding to TOML's `[[a.b]]`. Sections can have two types of body: bindings and nested document. Binding can contain any number of bindings and nested one can contain nested Eure document in `{}'. In the above example, `@ jobs.hello-world` and '@ jobs.build` have nested document.
 ```
 
   @ code
   '###': Code
 
-  c[] = ```markdown
+  text-types = ```markdown
 As I said "plaintext" before, there's other text type in Eure. One is inline code and another is codeblock. Both can have language tag like `` json`{"a": 1}` `` for inline code. One interesting point is that `` plaintext`hello` `` is equivalent with `"hello"` in the data model.
 
 The language tag can be used other than programming language. If you write, `` uuid`b5607686-fcb9-4f80-9040-3f0ba14f6b97` `` or `` datetime`2026-01-18T23:56:00Z` ``, your editor can validate the string content against the format without adding those in Eure's spec and data-model.
 ```
 }
 
-@ c[] {
+@ other-features {
   '##': Things not in the first example.
 
   @ variant
   '###': Variant
 
-  c[] = ```eure
+  union = ```eure
   @ pull_request {
     $variant: union
     $optional = true
@@ -144,29 +159,29 @@ The language tag can be used other than programming language. If you write, `` u
   }
   ```
 
-  c[] = ```markdown
+  this-from-union-schema = ```markdown
 This from Eure Schema of GitHub Actions workflow. `$variant: union` to tell Eure Schema deserializer this value is about defining a union type (`union` variant of `type` union), and not other type like record. This schema defines a union which have two variants, config and null, and document can specify variant like:
 ```
 
-  c[] = ```eure
+  null-variant = ```eure
   pull_request = null
   pull_request.$variant: null
   ```
 
-  c[] = ```markdown
+  null-variant-note = ```markdown
 though it's verbose since no other variants accept the `null` value.
 ```
 
-  @ c[]
+  @ extension
   '###': Extension
 
-  c[] = ```markdown
+  extension-definition = ```markdown
   In Eure, an ident prefixed with `$` called an extension or extension namespace which can be bound any valid Eure value without affecting the data model level.
 
   For example:
   ```
 
-  c[] = ```eure
+  schema-reference = ```eure
   $schema = "eure-schema.schema.eure"
 
   /// TextMate Language Grammar Schema
@@ -183,16 +198,16 @@ though it's verbose since no other variants accept the `null` value.
   "$schema".$optional = true
   ```
 
-  c[] = ```markdown
+  textmate-grammar-schema = ```markdown
 This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihaheho/eure/blob/dd9a7aa9292201d6ce24d6fbb191d9a705377257/assets/schemas/textmate-grammar.schema.eure>
 
 `$schema: /path/to/a/schema/file` is used to tell language processor about the schema of this file. And in Eure schema file, optional record field is specified by `$optional = true`. In both cases, those are unambiguated from string keys which prefixed with "$". If you need assign a value to a string key "$schema", you must write it as like `"$schema" = "https://json-schema.org/draft/2020-12/schema"`.
 ```
 
-  c[] {
+  planned-language-builtin-extension {
     '####': Planned language builtin extension
 
-    c[] = ```markdown
+    body = ```markdown
 - `$precision`: bulk specify the precision of floats in the scope to let serializer/deserializer to suggest how to serialize/deserialize the float value.
 - `$license`: specify the license of the document or the scope like `$license: MIT OR Apache-2.0`.
 - `$local`: a well-known extension namespace for document-local metadata for user.
@@ -200,10 +215,10 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
   }
 }
 
-@ c[] {
+@ whats-next {
   '##': What's next in the BETA release?
 
-  c[] = ```markdown
+  body = ```markdown
 - [ ] (`serde-eure`) Serde support with encoding extensions into configured special string keys.
 - [ ] (`bevy-eure-asset`) An ecosystem crate for Bevy to load Eure assets. That's one I keen to have for my game project.
 - [ ] (`eure-ls`): "Format" action to format Eure document from editor.
@@ -213,10 +228,10 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 ```
 }
 
-@ c[] {
+@ want-to-do {
   '##': Things I want to do but needs someone to help me.
 
-  c[] = ```markdown
+  body = ```markdown
 - [ ] Zed editor support.
 - [ ] Vim/Neovim support.
 - [ ] Publish Node.js package to npm with native builds.

@@ -1,4 +1,5 @@
 $ext-type.frontmatter {
+  title = `text`
 }
 
 '#' = `text`

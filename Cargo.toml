@@ -1,0 +1,9 @@
+[package]
+name = "eure-blog"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+eure = { package = "eure", git = "https://github.com/Hihaheho/eure" }
+indexmap = "2"
+maud = "0.27.0"

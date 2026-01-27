@@ -6,3 +6,9 @@
 
 !Eure.eure
 !article.schema.eure
+
+!Cargo.toml
+!src/**/*.rs
+# Added by cargo
+
+/target
