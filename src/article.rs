@@ -22,10 +22,26 @@ pub struct Frontmatter {
     pub draft: bool,
 }
 
+/// Entry for Table of Contents
+#[derive(Debug, Clone)]
+pub struct TocEntry {
+    pub id: String,
+    pub title: String,
+    pub level: u8,
+    pub children: Vec<TocEntry>,
+}
+
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub enum Item<T> {
     Normal(T),
     List(Vec<T>),
+    Toc(Toc),
+}
+
+#[derive(Debug, Clone, PartialEq, ParseDocument)]
+pub struct Toc {
+    #[eure(ext)]
+    toc: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, ParseDocument)]

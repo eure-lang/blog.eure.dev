@@ -18,6 +18,9 @@ $types.level1-content {
     '##' = `text`
     $flatten = [`$types.level1-content-map`]
   }
+  variants.toc {
+    $ext-type.toc = `boolean`
+  }
 }
 
 $types.level1-content-map {

@@ -50,10 +50,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 5. Generate article pages
     for (slug, article) in &articles {
-        let html = render_article_page(article, &highlighter);
-        let path = format!("dist/articles/{}.html", slug);
-        fs::write(&path, html.into_string())?;
-        println!("Generated: {}", path);
+        match render_article_page(article, &highlighter) {
+            Ok(html) => {
+                let path = format!("dist/articles/{}.html", slug);
+                fs::write(&path, html.into_string())?;
+                println!("Generated: {}", path);
+            }
+            Err(e) => {
+                eprintln!("Error rendering {}: {}", slug, e);
+                return Err(e.into());
+            }
+        }
     }
 
     // 6. Generate index page
@@ -265,6 +272,51 @@ a:hover {
 
 .article-content {
     line-height: 1.8;
+}
+
+/* Table of Contents */
+.article-toc {
+    margin-bottom: 2rem;
+    border: 1px solid var(--ctp-surface1);
+    border-radius: 8px;
+}
+
+.article-toc summary {
+    cursor: pointer;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: var(--ctp-text);
+}
+
+.article-toc summary:hover {
+    background-color: var(--ctp-surface0);
+}
+
+.article-toc nav {
+    padding: 0 1rem 1rem 1rem;
+}
+
+.article-toc ul {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin: 0;
+}
+
+.article-toc > nav > ul {
+    padding-left: 0;
+}
+
+.article-toc li {
+    margin: 0.25rem 0;
+}
+
+.article-toc a {
+    color: var(--ctp-blue);
+    text-decoration: none;
+}
+
+.article-toc a:hover {
+    text-decoration: underline;
 }
 
 .article-section {

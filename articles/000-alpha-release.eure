@@ -6,7 +6,15 @@ $frontmatter {
 '#': [alpha release] Eure: if TOML meets jq, tagged unions, and arbitrarily nestable syntax
 
 intro-message = ```markdown
+> [!NOTE]
+> This is draft version of the blog post.
+
 Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to announce the first alpha release of a newly designed data notation language called Eure. It encourage user to write their data expressively.
+```
+
+tldr-links = ```markdown
+Landing page / web playground: https://eure.dev
+GitHub: https://github.com/Hihaheho/eure
 ```
 
 tldr-for-toml-user = ```markdown
@@ -16,17 +24,46 @@ tldr-for-toml-user = ```markdown
 - For array table, `@ project.member[]` instead of `[[project.member]]`
 ```
 
+toc-here.$toc = true
+
 @ why-toml-yaml {
-  '##': Why I mentioned TOML and YAML?
+  '##': Filling the gap between TOML and YAML
 
   body = ```markdown
-I'm a fan of both TOML and YAML. I prefer TOML's minimalism and flexibility, but YAML's versatility and arbitrary nesting syntax.
+I'm a fan of both TOML and YAML. I like TOML for its minimalism and flexibility, and YAML for its versatility and arbitrary nesting.
 
 Personally, I don't choose YAML for small configuration files because it makes the file too verbose, and TOML is more suitable for that. But for manifest files for Kubernetes, CI/CD pipelines, etc., which tends to be complex and hard to maintain, YAML is more suitable.
 
 Eure is designed to cover the gap between TOML and YAML. It's designed to have minimalism and flexibility like TOML, but also have versatility and arbitrary nesting syntax like YAML. Thus, Eure is a good choice for both small configuration files and complex manifest files.
 
 Also, it's designed to cover the modern data types like tuples, never type constructor, and tagged unions. It'll cover various use cases not by including rich feature-sets into the language, but with builtin extensibility.
+```
+}
+
+@ data-model-and-interpretation {
+  '##': Data model & interpretation (from the spec)
+
+  body = ```markdown
+**Data model (JSON-compatible, but richer):**
+- Same core types as JSON: null, bool, number, string, array, map
+- Extra types: arbitrary-precision integers, tuples, holes, language-tagged text, and extensions (metadata channel)
+- When converting to JSON, tuples may become arrays and text language tags/extensions can be dropped
+
+**Interpretation (how a document is applied):**
+- A document is interpreted as a series of actions that navigate a tree and bind values
+- Evaluation is deterministic and top-to-bottom with a well-defined, intuitive set of actions
+- Each binding asserts the target is unbound, then binds a value
+- Sections are just scoped path prefixes; `@ items[]` appends to arrays
+
+Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md#8-document-interpretation
+```
+
+  toml-diff = ```markdown
+**Differences from TOML (high level):**
+- Arbitrary nesting with sections and block sections (no top-level table/array-table limitations)
+- Richer value types (tuples, holes, tagged text, extensions)
+- Text binding with `:` for raw plaintext on a line
+- Paths are first-class (e.g., `a.b[0].c`, tuple index `#0`)
 ```
 }
 
@@ -225,6 +262,7 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 - [ ] (`eure-ls`): "Format" action to format Eure document from editor.
 - [ ] (`eure-ls`): Editor hover support
 - [ ] (`eure-ls`): Editor completion support
+- [ ] (`eure-ls`): Programmatic document edits (like `cargo add` modifies Cargo.toml)
 - [ ] (`vscode`): "Preview JSON" action in VS Code ext
 ```
 }
@@ -240,7 +278,45 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 ```
 }
 
-@ c[] {
+@ spec-reference {
+  '##': Spec (alpha)
+
+  body = ```markdown
+Reference: https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md
+```
+}
+
+@ alpha-notes {
+  '##': Alpha notes
+
+  body = ```markdown
+- Current release at the time of writing: v0.1.4
+- Stability: alpha quality; syntax and features may change without notice
+- Compatibility: breaking changes may occur between alpha versions
+- Known limitations / not yet implemented: some features are unimplemented (e.g. formatting)
+```
+}
+
+@ try-it {
+  '##': Try it
+
+  body = ````markdown
+Install CLI:
+`cargo install eure-cli`
+
+Convert Eure to JSON:
+```
+echo 'greeting: Hello World!' | eure to-json -
+{"greeting":"Hello World!"}
+```
+
+Editor extensions:
+- VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=hihaheho.eurels
+- Open VSX: https://open-vsx.org/extension/hihaheho/eurels
+````
+}
+
+@ needs-feedback {
   '##': Needs feedback
 
   c = ```markdown
