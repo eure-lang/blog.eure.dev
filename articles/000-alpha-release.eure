@@ -11,7 +11,7 @@ This is a draft version of the blog post.
 draft-note.$mark.alert: NOTE
 
 intro-message = ```markdown
-Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to announce the first alpha release of a newly designed data notation language called Eure. It encourages users to write their data expressively.
+Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to announce the first alpha release of a newly designed data notation language called Eure (pronounced "your"). It encourages users to write their data expressively.
 ```
 
 tldr-links = ```markdown
