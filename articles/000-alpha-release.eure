@@ -45,7 +45,7 @@ Personally, I don't choose YAML for small configuration files because it makes t
 
 Eure is designed to cover the gap between TOML and YAML. It's designed to have the minimalism and flexibility of TOML, but also the versatility and arbitrary nesting syntax of YAML. Thus, Eure is a good choice for both small configuration files and complex manifest files.
 
-Also, it's designed to cover modern data types like tuples, the never type constructor, and tagged unions. It'll cover various use cases not by adding a rich feature set into the language, but through built-in extensibility.
+Also, it's designed to cover modern data types like tuples and tagged unions. It'll cover various use cases not by adding a rich feature set into the language, but through built-in extensibility.
 ```
 }
 
@@ -255,7 +255,8 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
   body = ```markdown
 **Data model (JSON-compatible, but richer):**
 - Same core types as JSON: null, bool, number, string, array, map
-- Extra types: arbitrary-precision integers, tuples, holes, language-tagged text, and extensions (metadata channel)
+- Extra types: arbitrary-precision integers, tuples, language-tagged text, and extensions (metadata channel)
+- Holes: optionally labeled placeholders for incomplete documents without emitting schema errors
 - When converting to JSON, tuples may become arrays and text language tags/extensions can be dropped
 
 **Interpretation (how a document is applied):**
