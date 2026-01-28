@@ -120,7 +120,7 @@ As you noticed, this is what a GitHub Action workflow could look like in Eure.
   '###': Path
 
   md = ```markdown
-`push.branches` and `jobs.hello_world` are paths. A path is a sequence of keys separated by `.`. Path syntax is used in bindings, map keys, and section headers.
+`push.branches` and `jobs.hello_world` are paths. A path is a sequence of keys separated by `.`, similar to jq's path expressions. Path syntax is used in bindings, map keys, and section headers.
 
 **Key forms:**
 - Identifier: `jobs.hello_world`
@@ -143,7 +143,7 @@ Eure's object keys are strings, integers, or tuples (only string keys are JSON-c
   binding-types = ```markdown
 There are two types of binding: `=` (value binding) and `:` (text binding). The left-hand side is always a path. On the right-hand side of `=`, you can write any literals like `42` (integer), `3.24` (float), `"escaped\nstring"`, `'literal string'`, `(1.0, "tuple")`, code blocks (delimited with 3-6 backticks), `` `let a = 1` `` (inline code), `[1, 2, 3]`, and `{ x => 1, y => 2 }` (inline map).
 
-`:` is called "Text Binding". It interprets the right-hand side until newline or EOF as plaintext, always without escaping or implicit typing, unlike YAML. So `text: true` is always `text = "true"`. Use `=` when you want to bind a boolean or any other non-plaintext type.
+`:` is called "Text Binding". It interprets the right-hand side until newline or EOF as plaintext, always without escaping or implicit typing, unlike YAML. So `text: true` is always `text = "true"`. Use `=` when you want to bind a boolean or any other non-plaintext type. This avoids YAML's implicit typing pitfalls where `port: 8080` becomes an integer or `country: NO` becomes a boolean. Note: leading Unicode whitespace is trimmed, and `: ` followed by only whitespace until newline is equivalent to `= ""`.
 
 Bindings can have composite paths like `push.branches =`.
 ```
@@ -167,10 +167,12 @@ Eure allows arbitrary nesting with sections and block sections, so you can struc
       @ steps[]
       run: echo "Hello, World!"
     }
+    ```
 
+    flattened = ```eure
     // equivalent to (flattened paths)
-    jobs.hello_world2.runs-on: ubuntu-latest
-    jobs.hello_world2.steps[].run: echo "Hello, World!"
+    jobs.hello_world.runs-on: ubuntu-latest
+    jobs.hello_world.steps[].run: echo "Hello, World!"
     ```
 
     array-nesting = ```markdown
@@ -340,8 +342,8 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 **Data model (JSON-compatible, but richer):**
 - Same core types as JSON: null, bool, number, string, array, map
 - Extra types: arbitrary-precision integers, tuples, language-tagged text, and extensions (metadata channel)
-- Holes: optionally labeled placeholders for incomplete documents without emitting schema errors
-- When converting to JSON, tuples may become arrays and text language tags/extensions can be dropped
+- Holes: optionally labeled placeholders for incomplete documents without emitting schema errors (e.g., `!todo`, `!`)
+- When converting to JSON, tuples may become arrays and text language tags/extensions can be dropped, and holes make the conversion fail.
 
 **Interpretation (how a document is applied):**
 - A document is interpreted as a series of actions that navigate a tree and bind values
@@ -359,7 +361,7 @@ Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.5/do
   body = ```markdown
 Eure Schema is a schema format for Eure documents. It is itself a valid Eure document, just like JSON Schema is valid JSON. You can validate Eure Schema files with a meta-schema the same way you validate normal documents.
 
-Compared to JSON Schema, Eure Schema has native support for tagged unions, tuples, and other Eure-specific types.
+Compared to JSON Schema, Eure Schema has native support for tagged unions, tuples, and other Eure-specific types. Eure Schema can be converted to/from JSON Schema (implementation exists but not yet integrated into CLI).
 
 For interop with Rust and other languages built around algebraic data types, Eure Schema tends to be more direct and intuitive. I'm also working on bidirectional conversion between Eure Schema and Rust type definitions.
 ```
@@ -455,6 +457,13 @@ Or install the CLI:
   bash-convert = ```bash
   # Convert Eure to JSON
   echo 'greeting: Hello World!' | eure to-json -
+  ```
+
+  bash-from-formats = ```bash
+  # Convert from existing formats
+  eure from-json config.json > config.eure
+  eure from-toml config.toml > config.eure
+  # (coming soon: from-yaml, to-toml, to-yaml)
   ```
 
   body2 = markdown`Output:`
