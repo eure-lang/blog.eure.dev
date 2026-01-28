@@ -581,6 +581,17 @@ h6.section-header { font-size: 0.875rem; }
     color: var(--ctp-red);
 }
 
+/* Giallo Code Blocks */
+.giallo {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 1rem 0;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .site-main {

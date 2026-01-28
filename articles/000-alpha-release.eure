@@ -448,26 +448,34 @@ Reference: https://github.com/Hihaheho/eure/blob/v0.1.5/docs/spec/alpha.md
 @ try-it {
   '##': Try it
 
-  body = ````markdown
-Web playground:
+  body1 = ```markdown
+Try it in the web playground:
 <https://eure.dev>
 
-Install CLI:
-`cargo install eure-cli`
-
-Convert Eure to JSON:
-```bash
-echo 'greeting: Hello World!' | eure to-json -
-```
-Output:
-```json
-{"greeting":"Hello World!"}
+Or install the CLI:
 ```
 
+  bash-install = ```bash
+  # Install the CLI
+  cargo install eure-cli
+  ```
+
+  bash-convert = ```bash
+  # Convert Eure to JSON
+  echo 'greeting: Hello World!' | eure to-json -
+  ```
+
+  body2 = markdown`Output:`
+
+  json-output = ```json
+  {"greeting":"Hello World!"}
+  ```
+
+  body3 = ```markdown
 Editor extensions (optional):
 - VS Code Marketplace: https://marketplace.visualstudio.com/items?itemName=hihaheho.eurels
 - Open VSX: https://open-vsx.org/extension/hihaheho/eurels
-````
+```
 }
 
 @ needs-feedback {
