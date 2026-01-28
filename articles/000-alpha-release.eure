@@ -120,7 +120,7 @@ Also, it's designed to cover modern data types like tuples and tagged unions. It
   ````
 
   as-you-notice = ```markdown
-As you noticed, this is what a GitHub Action workflow could look like in Eure.
+This is what a GitHub Action workflow could look like in Eure.
 ```
 
   reading-guide = ```markdown
@@ -226,7 +226,7 @@ This is an example TOML from <https://toml.io/en/v1.1.0#array-of-tables>:
     name = "plantain"
     ```
 
-    eure-equivalent = markdown`In Eure (same structure, more concise and readable):`
+    eure-equivalent = markdown`In Eure:`
 
     example-eure = ```eure
     @ fruits[] {
@@ -235,12 +235,35 @@ This is an example TOML from <https://toml.io/en/v1.1.0#array-of-tables>:
       @ physical
       color: red
       shape: round
+
+      @ varieties[]
+      name: red delicious
+
+      @ varieties[]
+      name: granny smith
     }
 
     @ fruits[] {
       name: banana
       @ varieties[]
-      name: red delicious
+      name: plantain
+    }
+    ```
+
+    or-more-concisely = markdown`Or more concisely:`
+
+    example-eure-concise = ```eure
+    @ fruits[] {
+      name: apple
+      physical.color: red
+      physical.shape: round
+      varieties[].name: red delicious
+      varieties[].name: granny smith
+    }
+
+    @ fruits[] {
+      name: banana
+      varieties[].name: plantain
     }
     ```
   }
@@ -433,7 +456,7 @@ For interop with Rust and other languages built around algebraic data types, Eur
 }
 
 @ want-to-do {
-  '##': Things I want to do but need someone to help me.
+  '##': Things I'd like to implement (help welcome)
 
   body = ```markdown
 - [ ] Zed editor support.
@@ -506,12 +529,12 @@ Editor extensions (optional):
   '##': Needs feedback
 
   c = ```markdown
-- The pronunciation of Eure sounds like "your" is fine?
-- The symbol selection for grammar looks good or bad? Especially for the `@`
-- Overall syntax looks good or bad?
-- The $variant seems nice or bad for union tag?
+- Is the pronunciation of Eure (like "your") okay?
+- How does the symbol selection look? Especially `@`
+- How does the overall syntax look?
+- Does `$variant` work well as a union tag?
 - What tooling is essential to use Eure for your use cases?
-- Any questions
+- Any other questions?
 
 Places for feedback are:
 - GitHub Discussion/ Issue on the repo
