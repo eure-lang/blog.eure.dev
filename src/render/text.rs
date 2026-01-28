@@ -14,7 +14,7 @@ pub fn render_text(text: &Text, highlighter: &CodeHighlighter) -> Markup {
 fn render_with_language(content: &str, lang: &str, highlighter: &CodeHighlighter) -> Markup {
     match lang {
         "markdown" => render_markdown(content),
-        "eure" => render_eure_highlighted(content),
+        "eure" => render_eure_highlighted(content, None),
         other => highlighter.highlight(content, other),
     }
 }

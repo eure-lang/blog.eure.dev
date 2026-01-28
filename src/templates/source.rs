@@ -1,5 +1,6 @@
 use maud::{Markup, html};
 
+use crate::render::code_highlight::CodeHighlighter;
 use crate::render::eure_highlight::render_eure_highlighted_with_line_numbers;
 use crate::templates::base_layout;
 
@@ -10,6 +11,7 @@ pub fn render_source_page(
     title: &str,
     source_content: &str,
     commit_hash: Option<&str>,
+    highlighter: &CodeHighlighter,
 ) -> Markup {
     let github_url = commit_hash.map(|hash| {
         format!(
@@ -34,7 +36,7 @@ pub fn render_source_page(
                 }
             }
             div.source-content {
-                (render_eure_highlighted_with_line_numbers(source_content))
+                (render_eure_highlighted_with_line_numbers(source_content, Some(highlighter)))
             }
         }
     };

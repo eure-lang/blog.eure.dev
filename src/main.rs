@@ -90,6 +90,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             article.frontmatter.title.as_str(),
             source_content,
             commit_hash.as_deref(),
+            &highlighter,
         );
         let source_path = format!("dist/source/{}.html", slug);
         fs::write(&source_path, source_html.into_string())?;
