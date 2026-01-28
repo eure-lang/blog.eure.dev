@@ -13,16 +13,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::create_dir_all("dist/articles")?;
     fs::create_dir_all("dist/styles")?;
 
-    // 2. Initialize highlighter
+    // 2. Copy favicon assets
+    copy_favicon_assets()?;
+
+    // 3. Initialize highlighter
     let highlighter = CodeHighlighter::new()?;
 
-    // 3. Generate CSS
+    // 4. Generate CSS
     let syntax_css = highlighter.generate_css()?;
     fs::write("dist/styles/syntax.css", syntax_css)?;
     fs::write("dist/styles/eure-syntax.css", generate_eure_css())?;
     fs::write("dist/styles/main.css", generate_main_css())?;
 
-    // 4. Read and parse articles
+    // 5. Read and parse articles
     let mut articles: Vec<(String, Article)> = Vec::new();
     for entry in fs::read_dir("articles")? {
         let path = entry?.path();
@@ -48,7 +51,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Sort by slug (descending for newest first)
     articles.sort_by(|a, b| b.0.cmp(&a.0));
 
-    // 5. Generate article pages
+    // 6. Generate article pages
     for (slug, article) in &articles {
         match render_article_page(article, &highlighter) {
             Ok(html) => {
@@ -63,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    // 6. Generate index page
+    // 7. Generate index page
     let entries: Vec<ArticleEntry> = articles
         .iter()
         .map(|(slug, article)| ArticleEntry {
@@ -87,6 +90,54 @@ fn parse_article(input: &str) -> Result<Article, String> {
         .parse(doc.get_root_id())
         .map_err(|e| format!("Article parse error: {:?}", e))?;
     Ok(article)
+}
+
+fn copy_favicon_assets() -> Result<(), Box<dyn std::error::Error>> {
+    let assets_dir = "assets";
+    let favicon_files = [
+        "favicon.ico",
+        "favicon-16x16.png",
+        "favicon-32x32.png",
+        "apple-touch-icon.png",
+        "android-chrome-192x192.png",
+        "android-chrome-512x512.png",
+    ];
+
+    for file in &favicon_files {
+        let src = format!("{}/{}", assets_dir, file);
+        let dst = format!("dist/{}", file);
+        if std::path::Path::new(&src).exists() {
+            fs::copy(&src, &dst)?;
+            println!("Copied: {}", dst);
+        } else {
+            eprintln!("Warning: {} not found", src);
+        }
+    }
+
+    // Generate site.webmanifest
+    let manifest = r##"{
+    "name": "Eure Blog",
+    "short_name": "Eure Blog",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#1e1e2e",
+    "background_color": "#1e1e2e",
+    "display": "standalone"
+}"##;
+    fs::write("dist/site.webmanifest", manifest)?;
+    println!("Generated: dist/site.webmanifest");
+
+    Ok(())
 }
 
 fn generate_main_css() -> String {
