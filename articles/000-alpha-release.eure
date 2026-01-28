@@ -351,14 +351,6 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 
 Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.5/docs/spec/alpha.md#8-document-interpretation
 ```
-
-  toml-diff = ```markdown
-**Differences from TOML (high level):**
-- Arbitrary nesting with sections and block sections (no top-level table/array-table limitations)
-- Richer value types (tuples, holes, tagged text, extensions)
-- Text binding with `:` for raw plaintext on a line
-- Paths are first-class (e.g., `a.b[0].c`, tuple index `#0`)
-```
 }
 
 @ eure-schema {
