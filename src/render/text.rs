@@ -29,6 +29,6 @@ fn render_markdown(content: &str) -> Markup {
         ..Options::gfm()
     };
     let html_output =
-        to_html_with_options(content, &options).unwrap_or_else(|_| content.to_string());
+        to_html_with_options(content, &options).expect("Failed to convert markdown to HTML");
     html! { div.markdown-content { (PreEscaped(html_output)) } }
 }

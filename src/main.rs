@@ -35,6 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 6. Read and parse articles (slug, source_content, article)
     let mut articles: Vec<(String, String, Article)> = Vec::new();
+    let mut parse_errors: Vec<(std::path::PathBuf, String)> = Vec::new();
     for entry in fs::read_dir("articles")? {
         let path = entry?.path();
         if path.extension().is_some_and(|e| e == "eure") {
@@ -50,10 +51,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     articles.push((slug, content, article));
                 }
                 Err(e) => {
-                    eprintln!("Error parsing {:?}: {:?}", path, e);
+                    parse_errors.push((path.clone(), e));
                 }
             }
         }
+    }
+
+    // Fail build if there were parse errors
+    if !parse_errors.is_empty() {
+        eprintln!("\nBuild failed with {} parse error(s):", parse_errors.len());
+        for (path, err) in &parse_errors {
+            eprintln!("  {:?}: {}", path, err);
+        }
+        return Err("Article parse errors".into());
     }
 
     // Sort by slug (descending for newest first)

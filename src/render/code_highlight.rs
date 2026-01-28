@@ -27,22 +27,14 @@ impl CodeHighlighter {
                 };
                 renderer.render(&highlighted, &RenderOptions::default())
             }
-            Err(_) => {
-                // Fallback: escape only
-                format!(
-                    "<pre class=\"code-block\"><code class=\"language-{}\">{}</code></pre>",
-                    language,
-                    html_escape(code)
-                )
+            Err(e) => {
+                panic!(
+                    "Failed to highlight code for language '{}': {:?}",
+                    language, e
+                );
             }
         };
 
         html! { (PreEscaped(html_output)) }
     }
-}
-
-fn html_escape(s: &str) -> String {
-    s.replace('&', "&amp;")
-        .replace('<', "&lt;")
-        .replace('>', "&gt;")
 }
