@@ -155,6 +155,71 @@ Bindings can have composite paths like `push.branches =`.
 `@` is the beginning of a section and is like table syntax in TOML. Eure's `@ a.b[]` corresponds to TOML's `[[a.b]]`. Sections can have two types of body: bindings and nested documents. A binding body can contain any number of bindings; a nested body can contain a nested Eure document in `{}`. In the above example, `@ jobs.hello_world` and `@ jobs.build` have nested documents.
 ```
 
+  @ nesting {
+    '###': Nesting
+
+    body = ```markdown
+Eure allows arbitrary nesting with sections and block sections, so you can structure complex documents without TOML's table/array-table limitations.
+```
+    example = ```eure
+    @ jobs.hello_world {
+      runs-on: ubuntu-latest
+      @ steps[]
+      run: echo "Hello, World!"
+    }
+
+    // equivalent to (flattened paths)
+    jobs.hello_world2.runs-on: ubuntu-latest
+    jobs.hello_world2.steps[].run: echo "Hello, World!"
+    ```
+
+    array-nesting = ```markdown
+Nested sections often read more naturally than TOML's array-table syntax. Here's a TOML example, followed by a more concise Eure equivalent.
+
+This is an example TOML from <https://toml.io/en/v1.1.0#array-of-tables>:
+```
+
+    example-toml = ```toml
+    [[fruits]]
+    name = "apple"
+
+    [fruits.physical]  # subtable
+    color = "red"
+    shape = "round"
+
+    [[fruits.varieties]]  # nested array of tables
+    name = "red delicious"
+
+    [[fruits.varieties]]
+    name = "granny smith"
+
+
+    [[fruits]]
+    name = "banana"
+
+    [[fruits.varieties]]
+    name = "plantain"
+    ```
+
+    eure-equivalent = markdown`In Eure (same structure, more concise and readable):`
+
+    example-eure = ```eure
+    @ fruits[] {
+      name: apple
+
+      @ physical
+      color: red
+      shape: round
+    }
+
+    @ fruits[] {
+      name: banana
+      @ varieties[]
+      name: red delicious
+    }
+    ```
+  }
+
   @ code
   '###': Code
 
@@ -168,43 +233,62 @@ The language tag can be used for non-programming languages, too. If you write ``
 @ other-features {
   '##': Things not in the first example.
 
-  @ variant
-  '###': Variant
+  @ tagged-unions
+  '###': Tagged unions
 
-  union = ```eure
-  @ pull_request {
-    $variant: union
-    $optional = true
-    $variant-repr = "untagged"
-
-    /// Config variant (tried first in definition order)
-    variants.config {
-      branches = [`text`]
-      branches.$optional = true
-      paths = [`text`]
-      paths.$optional = true
-      paths-ignore = [`text`]
-      paths-ignore.$optional = true
-      types = [`text`]
-      types.$optional = true
-    }
-
-    variants.null = `null`
-  }
-  ```
-
-  this-from-union-schema = ```markdown
-This is from the Eure Schema of a GitHub Actions workflow. `$variant: union` tells the Eure Schema deserializer this value is about defining a union type (`union` variant of the `type` union), and not another type like record. This schema defines a union which has two variants, config and null, and a document can specify a variant like:
+  body = ```markdown
+Eure natively supports tagged unions in both the data model and the schema. This keeps documents flat and intuitive to write.
 ```
 
-  null-variant = ```eure
-  pull_request = null
-  pull_request.$variant: null
+  simple-example = ```eure
+  @ action
+  $variant: set-text
+  text: Hello, world!
   ```
 
-  null-variant-note = ```markdown
-Though it's verbose since no other variants accept the `null` value.
+  simple-note = ```markdown
+`$variant` selects a branch of a union.
 ```
+
+  yaml-label = markdown`In YAML:`
+
+  think-yaml = ```yaml
+  # This is a pseudo visual novel script in YAML
+
+  actions:
+    - !set-text
+      text: Hello, world!
+    - !set-selections
+      title: "Choose one of the following:"
+      selections:
+        - text: Option 1
+        - text: Option 2
+    - !spawn-script script0
+    - !wait-seconds 1.0
+  ```
+
+  eure-label = markdown`In Eure:`
+
+  eure-equivalent = ```eure
+  // This is a pseudo visual novel script in Eure
+
+  @ actions[]
+  $variant: set-text
+  text: Hello, world!
+
+  @ actions[]
+  $variant: set-selections
+  title: "Choose one of the following:"
+  selections[].text: Option 1
+  selections[].text: Option 2
+
+  @ actions[]: script0
+  $variant: spawn-script
+
+  @ actions[]: 1.0
+  $variant: wait-seconds
+  seconds: 1.0
+  ```
 
   @ extension
   '###': Extension
@@ -275,6 +359,46 @@ Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.5/do
 - Text binding with `:` for raw plaintext on a line
 - Paths are first-class (e.g., `a.b[0].c`, tuple index `#0`)
 ```
+}
+
+@ eure-schema {
+  '##': Eure Schema
+
+  body = ```markdown
+Eure Schema is a schema format for Eure documents. It is itself a valid Eure document, just like JSON Schema is valid JSON. You can validate Eure Schema files with a meta-schema the same way you validate normal documents.
+
+Compared to JSON Schema, Eure Schema has native support for tagged unions, tuples, and other Eure-specific types.
+
+For interop with Rust and other languages built around algebraic data types, Eure Schema tends to be more direct and intuitive. I'm also working on bidirectional conversion between Eure Schema and Rust type definitions.
+```
+
+  example-label = markdown`Example: schema corresponding to the visual-novel actions in the [tagged unions](#tagged-unions) section`
+
+  example = ```eure
+  /// Actions list
+  actions = [`$types.action`]
+
+  /// Action types that can be performed
+  $types.action {
+    $variant: union
+
+    variants.set-text.text = `text`
+
+    variants.set-selections {
+      title = `text`
+      selections = [`$types.selection`]
+    }
+
+    variants.spawn-script.script = `text`
+    variants.use-script.script = `text`
+    variants.wait-seconds.seconds = `float`
+  }
+
+  /// Selection type
+  $types.selection {
+    text = `text`
+  }
+  ```
 }
 
 @ whats-next {
