@@ -265,7 +265,7 @@ This snippet is from Eure Schema of TextMate grammar: <https://github.com/Hihahe
 - Each binding asserts the target is unbound, then binds a value
 - Sections are just scoped path prefixes; `@ items[]` appends to arrays
 
-Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md#8-document-interpretation
+Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.5/docs/spec/alpha.md#8-document-interpretation
 ```
 
   toml-diff = ```markdown
@@ -306,7 +306,7 @@ Spec reference (interpretation): https://github.com/Hihaheho/eure/blob/v0.1.4/do
   '##': Spec (alpha)
 
   body = ```markdown
-Reference: https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md
+Reference: https://github.com/Hihaheho/eure/blob/v0.1.5/docs/spec/alpha.md
 ```
 }
 
@@ -314,7 +314,7 @@ Reference: https://github.com/Hihaheho/eure/blob/v0.1.4/docs/spec/alpha.md
   '##': Alpha notes
 
   body = ```markdown
-- Current release at the time of writing: v0.1.4
+- Current release at the time of writing: v0.1.5
 - Stability: alpha quality; syntax and features may change without notice
 - Compatibility: breaking changes may occur between alpha versions
 - Known limitations / not yet implemented: some features are unimplemented (e.g. formatting)
