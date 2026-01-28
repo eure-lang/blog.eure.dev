@@ -1,9 +1,9 @@
 $frontmatter {
-  title: Eure: filling the gap between TOML and YAML with jq-style paths, arbitrary nesting, and tagged unions
+  title: Eure: filling the gap between TOML and YAML with arbitrary nesting and tagged unions
   draft = false
 }
 
-'#': Eure: filling the gap between TOML and YAML with jq-style paths, arbitrary nesting, and tagged unions
+'#': Eure: filling the gap between TOML and YAML with arbitrary nesting and tagged unions
 
 draft-note = ```markdown
 This is a draft version of the blog post.
@@ -15,6 +15,18 @@ Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to 
 
 You can try it right now in the web playground: https://eure.dev
 It supports syntax highlighting, to-JSON conversion, schema verification, and real-time diagnostics.
+```
+
+eure-definition = ```markdown
+Eure is a minimalist, schema- and editor-friendly data language for algebraic data types and deeply nested data.
+
+**Highlights:**
+- Minimalist / human-friendly
+- Algebraic data model + JSON compatibility
+- JSON Schema interoperability
+- Rich editor experience
+- Programmatically editable
+- Dedicated templating extension
 ```
 
 tldr-links = ```markdown
@@ -116,6 +128,10 @@ Also, it's designed to cover modern data types like tuples and tagged unions. It
 As you noticed, this is what a GitHub Action workflow could look like in Eure.
 ```
 
+  reading-guide = ```markdown
+The following sections explain: **paths** for addressing nodes, **bindings** for assigning values, **sections** for scoping, **nesting** for structuring complex documents, and **code** for language-tagged text.
+```
+
   @ path
   '###': Path
 
@@ -145,6 +161,18 @@ There are two types of binding: `=` (value binding) and `:` (text binding). The 
 
 `:` is called "Text Binding". It interprets the right-hand side until newline or EOF as plaintext, always without escaping or implicit typing, unlike YAML. So `text: true` is always `text = "true"`. Use `=` when you want to bind a boolean or any other non-plaintext type. This avoids YAML's implicit typing pitfalls where `port: 8080` becomes an integer or `country: NO` becomes a boolean. Note: leading Unicode whitespace is trimmed, and `: ` followed by only whitespace until newline is equivalent to `= ""`.
 
+Example:
+```
+
+  text-binding-example = ```eure
+  // This is a text binding example
+  run: echo "Hello, World!"
+
+  // This is equivalent to the text binding example above
+  run = "echo \"Hello, World!\""
+  ```
+
+  composite-path = ```markdown
 Bindings can have composite paths like `push.branches =`.
 ```
 
