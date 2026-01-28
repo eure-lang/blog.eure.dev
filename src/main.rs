@@ -695,6 +695,26 @@ h6.section-header { font-size: 0.875rem; }
     box-shadow: 0 4px 20px rgba(69, 71, 90, 0.8);
 }
 
+/* Language Badge for Code Blocks */
+pre[data-language] {
+    position: relative;
+    padding-top: 2rem;
+}
+
+pre[data-language]::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--ctp-surface1);
+    color: var(--ctp-subtext0);
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-family: sans-serif;
+    border-radius: 0.5rem 0 0.25rem 0;
+    user-select: none;
+}
+
 /* Article Links (Source, GitHub) */
 .article-links {
     display: inline-flex;

@@ -39,7 +39,7 @@ fn render_eure_highlighted_inner(
         }
     } else {
         html! {
-            pre.code-block {
+            pre.code-block data-language="Eure" {
                 code {
                     (render_tokens(content, &tokens, &code_blocks, highlighter))
                 }
