@@ -511,6 +511,8 @@ h6.section-header { font-size: 0.875rem; }
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 1rem 0;
+    border: 1px solid var(--ctp-surface1);
+    box-shadow: 0 4px 20px rgba(69, 71, 90, 0.8);
 }
 
 /* Markdown Content */
@@ -557,6 +559,8 @@ h6.section-header { font-size: 0.875rem; }
     border-radius: 0.5rem;
     overflow-x: auto;
     margin: 1rem 0;
+    border: 1px solid var(--ctp-surface1);
+    box-shadow: 0 4px 20px rgba(69, 71, 90, 0.8);
 }
 
 .markdown-content pre code {
@@ -686,6 +690,8 @@ h6.section-header { font-size: 0.875rem; }
     font-size: 0.9rem;
     line-height: 1.5;
     margin: 1rem 0;
+    border: 1px solid var(--ctp-surface1);
+    box-shadow: 0 4px 20px rgba(69, 71, 90, 0.8);
 }
 
 /* Article Links (Source, GitHub) */

@@ -128,6 +128,8 @@ pub fn generate_eure_css() -> String {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.9rem;
     line-height: 1.5;
+    border: 1px solid #45475a;
+    box-shadow: 0 4px 20px rgba(69, 71, 90, 0.8);
 }
 
 .eure-keyword { color: #cba6f7; } /* mauve */
