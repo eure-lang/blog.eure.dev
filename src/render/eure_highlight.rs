@@ -5,22 +5,40 @@ use eure::{
 use maud::{Markup, PreEscaped, html};
 
 pub fn render_eure_highlighted(content: &str) -> Markup {
+    render_eure_highlighted_inner(content, false)
+}
+
+pub fn render_eure_highlighted_with_line_numbers(content: &str) -> Markup {
+    render_eure_highlighted_inner(content, true)
+}
+
+fn render_eure_highlighted_inner(content: &str, with_line_numbers: bool) -> Markup {
     let cst = match parse_tolerant(content) {
         ParseResult::Ok(cst) => cst,
         ParseResult::ErrWithCst { cst, .. } => cst,
     };
     let tokens = semantic_tokens(content, &cst);
 
-    html! {
-        pre.code-block.code-block-eure {
-            code {
-                (render_tokens(content, &tokens))
+    if with_line_numbers {
+        html! {
+            pre.code-block.code-block-eure.code-block-with-lines {
+                code {
+                    (render_tokens_by_line(content, &tokens))
+                }
+            }
+        }
+    } else {
+        html! {
+            pre.code-block.code-block-eure {
+                code {
+                    (render_tokens(content, &tokens))
+                }
             }
         }
     }
 }
 
-fn render_tokens(content: &str, tokens: &[SemanticToken]) -> Markup {
+fn render_tokens_to_string(content: &str, tokens: &[SemanticToken]) -> String {
     let mut html_output = String::new();
     let mut last_end: usize = 0;
 
@@ -28,12 +46,10 @@ fn render_tokens(content: &str, tokens: &[SemanticToken]) -> Markup {
         let start = token.start as usize;
         let end = start + token.length as usize;
 
-        // Text before token
         if start > last_end {
             html_output.push_str(&html_escape(&content[last_end..start]));
         }
 
-        // Token itself
         let text = html_escape(&content[start..end]);
         let classes = build_classes(token);
         html_output.push_str(&format!("<span class=\"{}\">{}</span>", classes, text));
@@ -41,12 +57,24 @@ fn render_tokens(content: &str, tokens: &[SemanticToken]) -> Markup {
         last_end = end;
     }
 
-    // Remaining text
     if last_end < content.len() {
         html_output.push_str(&html_escape(&content[last_end..]));
     }
 
-    html! { (PreEscaped(html_output)) }
+    html_output
+}
+
+fn render_tokens(content: &str, tokens: &[SemanticToken]) -> Markup {
+    html! { (PreEscaped(render_tokens_to_string(content, tokens))) }
+}
+
+fn render_tokens_by_line(content: &str, tokens: &[SemanticToken]) -> Markup {
+    let html_output = render_tokens_to_string(content, tokens);
+    let result: String = html_output
+        .split('\n')
+        .map(|line| format!("<span class=\"line\">{}</span>", line))
+        .collect();
+    html! { (PreEscaped(result)) }
 }
 
 fn build_classes(token: &SemanticToken) -> String {
@@ -119,6 +147,40 @@ pub fn generate_eure_css() -> String {
 .eure-mod-declaration { font-weight: 600; }
 .eure-mod-definition { font-weight: bold; }
 .eure-mod-section-header { text-decoration: underline; }
+
+/* Line numbers and wrap (source page only) */
+.code-block-with-lines {
+    counter-reset: line;
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+}
+
+.code-block-with-lines code {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+.code-block-with-lines .line {
+    display: block;
+    counter-increment: line;
+    position: relative;
+    min-height: 1.5em;
+}
+
+.code-block-with-lines .line::before {
+    content: counter(line);
+    position: absolute;
+    right: 100%;
+    width: 3em;
+    margin-right: 0.5em;
+    text-align: right;
+    color: #6c7086;
+    user-select: none;
+}
 "#
     .to_string()
 }

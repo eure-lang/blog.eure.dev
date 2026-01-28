@@ -1,6 +1,6 @@
 use maud::{Markup, html};
 
-use crate::render::eure_highlight::render_eure_highlighted;
+use crate::render::eure_highlight::render_eure_highlighted_with_line_numbers;
 use crate::templates::base_layout;
 
 const GITHUB_REPO: &str = "eure-lang/blog.eure.dev";
@@ -34,7 +34,7 @@ pub fn render_source_page(
                 }
             }
             div.source-content {
-                (render_eure_highlighted(source_content))
+                (render_eure_highlighted_with_line_numbers(source_content))
             }
         }
     };
