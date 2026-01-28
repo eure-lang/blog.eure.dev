@@ -1,0 +1,9 @@
+name = "blog-eure-dev"
+compatibility_date = "2025-12-03"
+
+[build]
+command = "cargo run"
+
+[assets]
+directory = "dist"
+not_found_handling = "single-page-application"

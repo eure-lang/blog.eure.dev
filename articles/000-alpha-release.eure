@@ -1,15 +1,9 @@
 $frontmatter {
   title: Eure: filling the gap between TOML and YAML with arbitrary nesting and tagged unions
-  date = "2026-01-28"
-  draft = false
+  date = `2026-01-28`
 }
 
 '#': Eure: filling the gap between TOML and YAML with arbitrary nesting and tagged unions
-
-draft-note = ```markdown
-This is a draft version of the blog post.
-```
-draft-note.$mark.alert: NOTE
 
 intro-message = ```markdown
 Hi, I'm Ryo Hirayama from Hihaheho Studio, an indie game studio. I'm excited to announce the first alpha release of a newly designed data notation language called Eure (pronounced "your"). It encourages users to write their data expressively.

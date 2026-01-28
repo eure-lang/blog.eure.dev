@@ -1,6 +1,6 @@
 $ext-type.frontmatter {
   title = `text`
-  draft = `boolean`
+  $flatten = [`$types.frontmatter`]
 }
 
 '#' = `text`
@@ -9,6 +9,18 @@ $unknown-fields {
   $variant: union
   variants.normal = `$types.level1-content`
   variants.list = [`$types.level1-content`]
+}
+
+$types.frontmatter {
+  $variant: union
+  variants.draft {
+    date = `text.date`
+    date.$optional = true
+    draft = { = true, $variant => "literal" }
+  }
+  variants.normal {
+    date = `text.date`
+  }
 }
 
 $types.level1-content {
