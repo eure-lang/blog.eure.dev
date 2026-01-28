@@ -61,11 +61,11 @@ Also, it's designed to cover modern data types like tuples and tagged unions. It
 
   body = ```markdown
 - Mid-sized or large configuration files
-- Data-driven test suite for a spec (Eure does have a massive test suite written in Eure)
-- Manifest files for Kubernetes, CI/CD pipelines, etc., which tend to be complex and hard to maintain
-- Generate complex JSON from Eure (Eure itself does this for a tmLanguage file)
+- Data-driven test suite for a spec (see [Eure's own test suite](https://github.com/Hihaheho/eure/tree/main/test-suite/cases))
+- Manifest files for Kubernetes, CI/CD pipelines, etc., which tend to be complex and hard to maintain (see [GitHub Actions example](https://eure.dev/?example=github-action&tab=json))
+- Generate complex JSON from Eure (e.g., [TextMate grammar files](https://eure.dev/?example=textmate-grammar&tab=json))
 - Write a blog post or document in a CMS or static site generator with Eure instead of markdown (this blog post is also [written in Eure](/source/000-alpha-release.html))
-- Write a JSON Schema in a more fluent and readable way by converting from Eure Schema
+- Write a JSON Schema in a more fluent and readable way by converting from Eure Schema (see [GitHub Actions schema example](https://eure.dev/?example=github-action&tab=schema))
 ```
 }
 
