@@ -54,21 +54,38 @@ fn render_text_with_mark(text: &Text, mark: &MarkOptions, highlighter: &CodeHigh
     }
 }
 
+const GITHUB_REPO: &str = "eure-lang/blog.eure.dev";
+
 pub fn render_article_page(
     article: &Article,
+    slug: &str,
+    commit_hash: Option<&str>,
     highlighter: &CodeHighlighter,
 ) -> Result<Markup, String> {
     // Collect TOC entries and validate unique IDs
     let mut seen_ids = HashSet::new();
     let toc_entries = collect_toc_entries(&article.sections, &mut seen_ids)?;
 
+    let github_url = commit_hash.map(|hash| {
+        format!(
+            "https://github.com/{}/blob/{}/articles/{}.eure",
+            GITHUB_REPO, hash, slug
+        )
+    });
+
     let content = html! {
         article.article {
             header.article-header {
                 h1.article-title { (render_text(&article.header, highlighter)) }
-                @if let Some(date) = &article.frontmatter.date {
-                    div.article-meta {
+                div.article-meta {
+                    @if let Some(date) = &article.frontmatter.date {
                         time.article-date { (date.as_str()) }
+                    }
+                    div.article-links {
+                        a.article-source-link href=(format!("/source/{}.html", slug)) { "Source" }
+                        @if let Some(url) = &github_url {
+                            a.article-github-link href=(url) target="_blank" rel="noopener noreferrer" { "GitHub" }
+                        }
                     }
                 }
                 @if !article.frontmatter.tags.is_empty() {

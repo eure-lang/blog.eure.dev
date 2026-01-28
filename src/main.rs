@@ -3,30 +3,38 @@ mod render;
 mod templates;
 
 use std::fs;
+use std::process::Command;
 
 use article::Article;
 use render::{CodeHighlighter, eure_highlight::generate_eure_css};
-use templates::{index::ArticleEntry, render_article_page, render_index_page};
+use templates::{index::ArticleEntry, render_article_page, render_index_page, render_source_page};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 1. Create directories
     fs::create_dir_all("dist/articles")?;
+    fs::create_dir_all("dist/source")?;
     fs::create_dir_all("dist/styles")?;
 
     // 2. Copy favicon assets
     copy_favicon_assets()?;
 
-    // 3. Initialize highlighter
+    // 3. Get git commit hash for GitHub links
+    let commit_hash = get_git_commit_hash();
+    if let Some(ref hash) = commit_hash {
+        println!("Git commit: {}", hash);
+    }
+
+    // 4. Initialize highlighter
     let highlighter = CodeHighlighter::new()?;
 
-    // 4. Generate CSS
+    // 5. Generate CSS
     let syntax_css = highlighter.generate_css()?;
     fs::write("dist/styles/syntax.css", syntax_css)?;
     fs::write("dist/styles/eure-syntax.css", generate_eure_css())?;
     fs::write("dist/styles/main.css", generate_main_css())?;
 
-    // 5. Read and parse articles
-    let mut articles: Vec<(String, Article)> = Vec::new();
+    // 6. Read and parse articles (slug, source_content, article)
+    let mut articles: Vec<(String, String, Article)> = Vec::new();
     for entry in fs::read_dir("articles")? {
         let path = entry?.path();
         if path.extension().is_some_and(|e| e == "eure") {
@@ -39,7 +47,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
                     let slug = path.file_stem().unwrap().to_string_lossy().to_string();
-                    articles.push((slug, article));
+                    articles.push((slug, content, article));
                 }
                 Err(e) => {
                     eprintln!("Error parsing {:?}: {:?}", path, e);
@@ -51,9 +59,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Sort by slug (descending for newest first)
     articles.sort_by(|a, b| b.0.cmp(&a.0));
 
-    // 6. Generate article pages
-    for (slug, article) in &articles {
-        match render_article_page(article, &highlighter) {
+    // 7. Generate article pages and source pages
+    for (slug, source_content, article) in &articles {
+        // Generate article page
+        match render_article_page(article, slug, commit_hash.as_deref(), &highlighter) {
             Ok(html) => {
                 let path = format!("dist/articles/{}.html", slug);
                 fs::write(&path, html.into_string())?;
@@ -64,12 +73,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 return Err(e.into());
             }
         }
+
+        // Generate source page
+        let source_html = render_source_page(
+            slug,
+            article.frontmatter.title.as_str(),
+            source_content,
+            commit_hash.as_deref(),
+        );
+        let source_path = format!("dist/source/{}.html", slug);
+        fs::write(&source_path, source_html.into_string())?;
+        println!("Generated: {}", source_path);
     }
 
-    // 7. Generate index page
+    // 8. Generate index page
     let entries: Vec<ArticleEntry> = articles
         .iter()
-        .map(|(slug, article)| ArticleEntry {
+        .map(|(slug, _, article)| ArticleEntry {
             slug: slug.as_str(),
             article,
         })
@@ -80,6 +100,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("\nBuild complete! {} articles generated.", articles.len());
     Ok(())
+}
+
+fn get_git_commit_hash() -> Option<String> {
+    Command::new("git")
+        .args(["rev-parse", "HEAD"])
+        .output()
+        .ok()
+        .and_then(|o| {
+            if o.status.success() {
+                String::from_utf8(o.stdout).ok()
+            } else {
+                None
+            }
+        })
+        .map(|s| s.trim().to_string())
 }
 
 fn parse_article(input: &str) -> Result<Article, String> {
@@ -641,6 +676,59 @@ h6.section-header { font-size: 0.875rem; }
     font-size: 0.9rem;
     line-height: 1.5;
     margin: 1rem 0;
+}
+
+/* Article Links (Source, GitHub) */
+.article-links {
+    display: inline-flex;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
+.article-source-link,
+.article-github-link {
+    color: var(--ctp-blue);
+    font-size: 0.875rem;
+}
+
+.article-source-link:hover,
+.article-github-link:hover {
+    text-decoration: underline;
+}
+
+/* Source Page */
+.source-view {
+    padding: 1rem 0;
+}
+
+.source-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--ctp-surface0);
+}
+
+.source-title {
+    font-size: 1.5rem;
+    color: var(--ctp-text);
+    margin-bottom: 0.75rem;
+}
+
+.source-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.source-back-link {
+    color: var(--ctp-blue);
+}
+
+.source-github-link {
+    color: var(--ctp-blue);
+}
+
+.source-content {
+    margin-top: 1rem;
 }
 
 /* Responsive */

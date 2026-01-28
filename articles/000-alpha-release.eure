@@ -1,5 +1,6 @@
 $frontmatter {
   title: Eure: filling the gap between TOML and YAML with arbitrary nesting and tagged unions
+  date = "2026-01-28"
   draft = false
 }
 
@@ -69,7 +70,7 @@ Also, it's designed to cover modern data types like tuples and tagged unions. It
 - Data-driven test suite for a spec (Eure does have a massive test suite written in Eure)
 - Manifest files for Kubernetes, CI/CD pipelines, etc., which tend to be complex and hard to maintain
 - Generate complex JSON from Eure (Eure itself does this for a tmLanguage file)
-- Write a blog post or document in a CMS or static site generator with Eure instead of markdown (this blog post is also written in Eure)
+- Write a blog post or document in a CMS or static site generator with Eure instead of markdown (this blog post is also [written in Eure](/source/000-alpha-release.html))
 - Write a JSON Schema in a more fluent and readable way by converting from Eure Schema
 ```
 }
