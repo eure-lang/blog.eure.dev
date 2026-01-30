@@ -1,13 +1,37 @@
 use maud::{html, Markup, DOCTYPE};
 
-pub fn base_layout(title: &str, content: Markup) -> Markup {
+pub const BASE_URL: &str = "https://blog.eure.dev";
+pub const SITE_NAME: &str = "Eure Blog";
+pub const DEFAULT_DESCRIPTION: &str = "A blog about Eure, a data notation language for algebraic data types and deeply nested data.";
+
+pub struct OgpMeta<'a> {
+    pub title: &'a str,
+    pub description: &'a str,
+    pub url: &'a str,
+    pub og_type: &'a str,
+}
+
+pub fn base_layout(title: &str, content: Markup, ogp: &OgpMeta) -> Markup {
     html! {
         (DOCTYPE)
         html lang="en" {
             head {
                 meta charset="utf-8";
                 meta name="viewport" content="width=device-width, initial-scale=1";
-                title { (title) " | Eure Blog" }
+                title { (title) " | " (SITE_NAME) }
+                meta name="description" content=(ogp.description);
+                // Open Graph
+                meta property="og:title" content=(ogp.title);
+                meta property="og:description" content=(ogp.description);
+                meta property="og:url" content=(ogp.url);
+                meta property="og:type" content=(ogp.og_type);
+                meta property="og:site_name" content=(SITE_NAME);
+                meta property="og:image" content=(format!("{}/ogp.png", BASE_URL));
+                // Twitter Card
+                meta name="twitter:card" content="summary_large_image";
+                meta name="twitter:title" content=(ogp.title);
+                meta name="twitter:description" content=(ogp.description);
+                meta name="twitter:image" content=(format!("{}/ogp.png", BASE_URL));
                 // Favicon
                 link rel="icon" type="image/x-icon" href="/favicon.ico";
                 link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png";

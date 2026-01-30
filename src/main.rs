@@ -147,6 +147,7 @@ fn copy_favicon_assets() -> Result<(), Box<dyn std::error::Error>> {
         "apple-touch-icon.png",
         "android-chrome-192x192.png",
         "android-chrome-512x512.png",
+        "ogp.png",
     ];
 
     for file in &favicon_files {

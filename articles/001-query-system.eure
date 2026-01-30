@@ -1,5 +1,6 @@
 $frontmatter {
   title: Query System Wins
+  description: Exploring the benefits of query systems in language processing, including incremental compilation and on-demand processing.
   draft = true
 }
 

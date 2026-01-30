@@ -7,6 +7,9 @@
 !Eure.eure
 !article.schema.eure
 
+!assets/**/*.png
+!assets/**/*.ico
+
 !Cargo.toml
 !src/**/*.rs
 # Added by cargo

@@ -38,6 +38,7 @@ pub struct Article {
 #[derive(Debug, Clone, PartialEq, ParseDocument)]
 pub struct Frontmatter {
     pub title: Text,
+    pub description: Text,
     #[eure(default)]
     pub date: Option<Text>,
     #[eure(default)]

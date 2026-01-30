@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 use crate::render::code_highlight::CodeHighlighter;
 use crate::render::eure_highlight::render_eure_highlighted_with_line_numbers;
-use crate::templates::base_layout;
+use crate::templates::base::{base_layout, OgpMeta, BASE_URL, DEFAULT_DESCRIPTION};
 
 const GITHUB_REPO: &str = "eure-lang/blog.eure.dev";
 
@@ -41,5 +41,12 @@ pub fn render_source_page(
         }
     };
 
-    base_layout(&format!("Source: {}", title), content)
+    let url = format!("{}/source/{}.html", BASE_URL, slug);
+    let ogp = OgpMeta {
+        title: &format!("Source: {}", title),
+        description: DEFAULT_DESCRIPTION,
+        url: &url,
+        og_type: "website",
+    };
+    base_layout(&format!("Source: {}", title), content, &ogp)
 }

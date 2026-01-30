@@ -1,7 +1,7 @@
 use maud::{html, Markup};
 
 use crate::article::Article;
-use crate::templates::base_layout;
+use crate::templates::base::{base_layout, OgpMeta, BASE_URL, DEFAULT_DESCRIPTION};
 
 pub struct ArticleEntry<'a> {
     pub slug: &'a str,
@@ -34,5 +34,11 @@ pub fn render_index_page(articles: &[ArticleEntry]) -> Markup {
         }
     };
 
-    base_layout("Home", content)
+    let ogp = OgpMeta {
+        title: "Home",
+        description: DEFAULT_DESCRIPTION,
+        url: BASE_URL,
+        og_type: "website",
+    };
+    base_layout("Home", content, &ogp)
 }
