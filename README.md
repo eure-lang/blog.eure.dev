@@ -1,6 +1,6 @@
 # blog.eure.dev
 
-This is the blog for Eure. It's a static site generated with Eure.
+This is the blog for [Eure](https://eure.dev). It's a static site generated with Eure.
 
 ## License
 
