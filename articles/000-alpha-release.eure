@@ -1,3 +1,4 @@
+$license: CC-BY-4.0
 $frontmatter {
   title: Eure: filling the gap between TOML and YAML with arbitrary nesting and tagged unions
   description: Announcing the alpha release of Eure, a minimalist data notation language designed to cover the gap between TOML and YAML with support for arbitrary nesting and tagged unions.
