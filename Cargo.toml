@@ -5,8 +5,8 @@ edition = "2024"
 license = "MPL-2.0"
 
 [dependencies]
-eure = { package = "eure", git = "https://github.com/Hihaheho/eure" }
+eure = { version = "0.1.6" }
 indexmap = "2"
 maud = "0.27.0"
 markdown = "1"
-giallo = { version = "0.2", features = ["dump"] }
+giallo = { version = "0.3", features = ["dump"] }
